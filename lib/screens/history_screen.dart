@@ -62,8 +62,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
         children: [
           IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                color: AppTheme.textDark, size: 20),
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: AppTheme.textDark,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 4),
           const Column(
@@ -72,16 +75,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
               Text(
                 'Riwayat Pembayaran',
                 style: TextStyle(
-                    color: AppTheme.textDark,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800),
+                  color: AppTheme.textDark,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
               Text(
                 'SPP Tahun Ajaran 2024/2025',
                 style: TextStyle(
-                    color: AppTheme.textMedium,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500),
+                  color: AppTheme.textMedium,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),
@@ -165,34 +170,43 @@ class _HistoryScreenState extends State<HistoryScreen> {
     ];
     return Row(
       children: [
-        ...filters.map((f) => Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: GestureDetector(
-                onTap: () => setState(() => _filter = f['key']!),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: _filter == f['key'] ? AppTheme.primary : AppTheme.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: _filter == f['key']
-                          ? AppTheme.primary
-                          : AppTheme.primary.withOpacity(0.2),
-                    ),
-                    boxShadow: _filter == f['key'] ? AppTheme.softShadow : [],
+        ...filters.map(
+          (f) => Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: GestureDetector(
+              onTap: () => setState(() => _filter = f['key']!),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: _filter == f['key']
+                      ? AppTheme.primary
+                      : AppTheme.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: _filter == f['key']
+                        ? AppTheme.primary
+                        : AppTheme.primary.withOpacity(0.2),
                   ),
-                  child: Text(
-                    f['label']!,
-                    style: TextStyle(
-                      color: _filter == f['key'] ? Colors.white : AppTheme.textDark,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                    ),
+                  boxShadow: _filter == f['key'] ? AppTheme.softShadow : [],
+                ),
+                child: Text(
+                  f['label']!,
+                  style: TextStyle(
+                    color: _filter == f['key']
+                        ? Colors.white
+                        : AppTheme.textDark,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-            )),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -296,7 +310,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       ),
                       const SizedBox(height: 4),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: bgColor,
                           borderRadius: BorderRadius.circular(20),
@@ -331,8 +348,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.receipt_rounded,
-                          size: 14, color: AppTheme.textLight),
+                      Icon(
+                        Icons.receipt_rounded,
+                        size: 14,
+                        color: AppTheme.textLight,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         'Kode: ${p.kodeTransaksi}',

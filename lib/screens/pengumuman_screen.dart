@@ -41,9 +41,7 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
     return Scaffold(
       backgroundColor: AppTheme.background,
       body: SafeArea(
-        child: _selected != null
-            ? _buildDetail(context)
-            : _buildList(context),
+        child: _selected != null ? _buildDetail(context) : _buildList(context),
       ),
     );
   }
@@ -74,8 +72,11 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
         children: [
           IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                color: AppTheme.textDark, size: 20),
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: AppTheme.textDark,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 4),
           Expanded(
@@ -111,7 +112,10 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
               child: Text(
                 '$unread Baru',
                 style: const TextStyle(
-                    color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
         ],
@@ -145,7 +149,9 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
                 color: isSelected ? AppTheme.primary : AppTheme.background,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: isSelected ? AppTheme.primary : AppTheme.primary.withOpacity(0.2),
+                  color: isSelected
+                      ? AppTheme.primary
+                      : AppTheme.primary.withOpacity(0.2),
                 ),
               ),
               child: Center(
@@ -182,11 +188,7 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 5,
-                height: 110,
-                color: config['color'] as Color,
-              ),
+              Container(width: 5, height: 110, color: config['color'] as Color),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -197,9 +199,13 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 3),
+                              horizontal: 8,
+                              vertical: 3,
+                            ),
                             decoration: BoxDecoration(
-                              color: (config['color'] as Color).withOpacity(0.12),
+                              color: (config['color'] as Color).withOpacity(
+                                0.12,
+                              ),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
@@ -229,7 +235,9 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
                         style: TextStyle(
                           color: AppTheme.textDark,
                           fontSize: 14,
-                          fontWeight: p.isRead ? FontWeight.w600 : FontWeight.w800,
+                          fontWeight: p.isRead
+                              ? FontWeight.w600
+                              : FontWeight.w800,
                           height: 1.3,
                         ),
                         maxLines: 2,
@@ -250,8 +258,11 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.access_time_rounded,
-                              size: 12, color: AppTheme.textLight),
+                          Icon(
+                            Icons.access_time_rounded,
+                            size: 12,
+                            color: AppTheme.textLight,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             p.tanggal,
@@ -297,8 +308,11 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
             children: [
               IconButton(
                 onPressed: () => setState(() => _selected = null),
-                icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                    color: AppTheme.textDark, size: 20),
+                icon: const Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: AppTheme.textDark,
+                  size: 20,
+                ),
               ),
               const Text(
                 'Detail Pengumuman',
@@ -320,7 +334,10 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
               children: [
                 // Kategori badge
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: (config['color'] as Color).withOpacity(0.12),
                     borderRadius: BorderRadius.circular(20),
@@ -347,8 +364,11 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Icon(Icons.calendar_today_rounded,
-                        size: 14, color: config['color'] as Color),
+                    Icon(
+                      Icons.calendar_today_rounded,
+                      size: 14,
+                      color: config['color'] as Color,
+                    ),
                     const SizedBox(width: 6),
                     Text(
                       p.tanggal,
@@ -399,11 +419,16 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
                     color: const Color(0xFFFFEDE0),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                        color: AppTheme.primary.withOpacity(0.2)),
+                      color: AppTheme.primary.withOpacity(0.2),
+                    ),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.school_rounded, color: AppTheme.primary, size: 20),
+                      Icon(
+                        Icons.school_rounded,
+                        color: AppTheme.primary,
+                        size: 20,
+                      ),
                       const SizedBox(width: 10),
                       const Expanded(
                         child: Text(

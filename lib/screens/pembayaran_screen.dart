@@ -21,9 +21,24 @@ class _PembayaranScreenState extends State<PembayaranScreen>
   late Animation<double> _doneScale;
 
   final List<Map<String, dynamic>> _methods = [
-    {'label': 'Transfer Bank', 'sub': 'BCA / Mandiri / BRI / BNI', 'icon': Icons.account_balance_rounded, 'color': const Color(0xFF3B82F6)},
-    {'label': 'QRIS', 'sub': 'Scan QR dari aplikasi manapun', 'icon': Icons.qr_code_scanner_rounded, 'color': const Color(0xFF8B5CF6)},
-    {'label': 'GoPay / OVO', 'sub': 'E-Wallet digital', 'icon': Icons.account_balance_wallet_rounded, 'color': const Color(0xFF22C55E)},
+    {
+      'label': 'Transfer Bank',
+      'sub': 'BCA / Mandiri / BRI / BNI',
+      'icon': Icons.account_balance_rounded,
+      'color': const Color(0xFF3B82F6),
+    },
+    {
+      'label': 'QRIS',
+      'sub': 'Scan QR dari aplikasi manapun',
+      'icon': Icons.qr_code_scanner_rounded,
+      'color': const Color(0xFF8B5CF6),
+    },
+    {
+      'label': 'GoPay / OVO',
+      'sub': 'E-Wallet digital',
+      'icon': Icons.account_balance_wallet_rounded,
+      'color': const Color(0xFF22C55E),
+    },
   ];
 
   @override
@@ -33,7 +48,10 @@ class _PembayaranScreenState extends State<PembayaranScreen>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _doneScale = CurvedAnimation(parent: _doneController, curve: Curves.elasticOut);
+    _doneScale = CurvedAnimation(
+      parent: _doneController,
+      curve: Curves.elasticOut,
+    );
   }
 
   @override
@@ -59,7 +77,9 @@ class _PembayaranScreenState extends State<PembayaranScreen>
     return Scaffold(
       backgroundColor: AppTheme.background,
       body: SafeArea(
-        child: _isDone ? _buildSuccessView(context) : _buildPaymentView(context),
+        child: _isDone
+            ? _buildSuccessView(context)
+            : _buildPaymentView(context),
       ),
     );
   }
@@ -96,8 +116,11 @@ class _PembayaranScreenState extends State<PembayaranScreen>
         children: [
           IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                color: AppTheme.textDark, size: 20),
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: AppTheme.textDark,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 4),
           const Column(
@@ -141,17 +164,28 @@ class _PembayaranScreenState extends State<PembayaranScreen>
             children: [
               const Text(
                 'Detail Tagihan',
-                style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Text(
                   'Belum Lunas',
-                  style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ],
@@ -159,13 +193,22 @@ class _PembayaranScreenState extends State<PembayaranScreen>
           const SizedBox(height: 16),
           _tagihanRow('Nama Siswa', 'Bintang Mutiara'),
           _tagihanRow('Kelas', 'Kelas A'),
-          _tagihanRow('Bulan', '${widget.tagihan.bulan} ${widget.tagihan.tahun}'),
+          _tagihanRow(
+            'Bulan',
+            '${widget.tagihan.bulan} ${widget.tagihan.tahun}',
+          ),
           const Divider(color: Colors.white24, height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Total Pembayaran',
-                  style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600)),
+              const Text(
+                'Total Pembayaran',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               Text(
                 widget.tagihan.nominalFormatted,
                 style: const TextStyle(
@@ -187,10 +230,18 @@ class _PembayaranScreenState extends State<PembayaranScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(color: Colors.white60, fontSize: 12)),
-          Text(value,
-              style: const TextStyle(
-                  color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700)),
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white60, fontSize: 12),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ],
       ),
     );
@@ -203,7 +254,10 @@ class _PembayaranScreenState extends State<PembayaranScreen>
         const Text(
           'Pilih Metode Pembayaran',
           style: TextStyle(
-              color: AppTheme.textDark, fontSize: 16, fontWeight: FontWeight.w800),
+            color: AppTheme.textDark,
+            fontSize: 16,
+            fontWeight: FontWeight.w800,
+          ),
         ),
         const SizedBox(height: 14),
         ...List.generate(
@@ -252,16 +306,18 @@ class _PembayaranScreenState extends State<PembayaranScreen>
                         Text(
                           _methods[i]['label'] as String,
                           style: const TextStyle(
-                              color: AppTheme.textDark,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700),
+                            color: AppTheme.textDark,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                         Text(
                           _methods[i]['sub'] as String,
                           style: const TextStyle(
-                              color: AppTheme.textMedium,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500),
+                            color: AppTheme.textMedium,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ],
                     ),
@@ -283,8 +339,11 @@ class _PembayaranScreenState extends State<PembayaranScreen>
                           : Colors.transparent,
                     ),
                     child: _selectedMethod == i
-                        ? const Icon(Icons.check_rounded,
-                            color: Colors.white, size: 14)
+                        ? const Icon(
+                            Icons.check_rounded,
+                            color: Colors.white,
+                            size: 14,
+                          )
                         : null,
                   ),
                 ],
@@ -338,7 +397,11 @@ class _PembayaranScreenState extends State<PembayaranScreen>
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline_rounded, color: Color(0xFFF59E0B), size: 20),
+          const Icon(
+            Icons.info_outline_rounded,
+            color: Color(0xFFF59E0B),
+            size: 20,
+          ),
           const SizedBox(width: 10),
           const Expanded(
             child: Text(
@@ -410,8 +473,14 @@ class _PembayaranScreenState extends State<PembayaranScreen>
               ),
               child: Column(
                 children: [
-                  _successRow('Nomor Bukti', 'TRX-${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}'),
-                  _successRow('Metode', _methods[_selectedMethod]['label'] as String),
+                  _successRow(
+                    'Nomor Bukti',
+                    'TRX-${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}',
+                  ),
+                  _successRow(
+                    'Metode',
+                    _methods[_selectedMethod]['label'] as String,
+                  ),
                   _successRow('Jumlah', widget.tagihan.nominalFormatted),
                   _successRow('Status', '✓ Lunas'),
                 ],
@@ -438,14 +507,22 @@ class _PembayaranScreenState extends State<PembayaranScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: const TextStyle(
-                  color: AppTheme.textMedium, fontSize: 13, fontWeight: FontWeight.w500)),
-          Text(value,
-              style: TextStyle(
-                  color: label == 'Status' ? AppTheme.success : AppTheme.textDark,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700)),
+          Text(
+            label,
+            style: const TextStyle(
+              color: AppTheme.textMedium,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              color: label == 'Status' ? AppTheme.success : AppTheme.textDark,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ],
       ),
     );

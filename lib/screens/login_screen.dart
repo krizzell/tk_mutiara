@@ -12,7 +12,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
-  final _emailController = TextEditingController(text: 'orangtua@tkmutiara.com');
+  final _emailController = TextEditingController(
+    text: 'orangtua@tkmutiara.com',
+  );
   final _passwordController = TextEditingController(text: 'mutiara123');
   bool _isLoading = false;
   bool _obscurePassword = true;
@@ -30,10 +32,10 @@ class _LoginScreenState extends State<LoginScreen>
       duration: const Duration(milliseconds: 800),
     );
     _fadeAnim = CurvedAnimation(parent: _animController, curve: Curves.easeOut);
-    _slideAnim = Tween<Offset>(
-      begin: const Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic));
+    _slideAnim = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+        .animate(
+          CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic),
+        );
     _animController.forward();
   }
 
@@ -64,10 +66,8 @@ class _LoginScreenState extends State<LoginScreen>
         context,
         PageRouteBuilder(
           pageBuilder: (_, __, ___) => const DashboardScreen(),
-          transitionsBuilder: (_, anim, __, child) => FadeTransition(
-            opacity: anim,
-            child: child,
-          ),
+          transitionsBuilder: (_, anim, __, child) =>
+              FadeTransition(opacity: anim, child: child),
           transitionDuration: const Duration(milliseconds: 500),
         ),
       );
@@ -151,11 +151,14 @@ class _LoginScreenState extends State<LoginScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Email
-        const Text('Email',
-            style: TextStyle(
-                color: AppTheme.textDark,
-                fontSize: 14,
-                fontWeight: FontWeight.w700)),
+        const Text(
+          'Email',
+          style: TextStyle(
+            color: AppTheme.textDark,
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         const SizedBox(height: 8),
         _buildTextField(
           controller: _emailController,
@@ -166,11 +169,14 @@ class _LoginScreenState extends State<LoginScreen>
         const SizedBox(height: 20),
 
         // Password
-        const Text('Password',
-            style: TextStyle(
-                color: AppTheme.textDark,
-                fontSize: 14,
-                fontWeight: FontWeight.w700)),
+        const Text(
+          'Password',
+          style: TextStyle(
+            color: AppTheme.textDark,
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         const SizedBox(height: 8),
         _buildTextField(
           controller: _passwordController,
@@ -190,16 +196,20 @@ class _LoginScreenState extends State<LoginScreen>
             ),
             child: Row(
               children: [
-                const Icon(Icons.error_outline_rounded,
-                    color: AppTheme.danger, size: 18),
+                const Icon(
+                  Icons.error_outline_rounded,
+                  color: AppTheme.danger,
+                  size: 18,
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     _errorMsg!,
                     style: const TextStyle(
-                        color: AppTheme.danger,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600),
+                      color: AppTheme.danger,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
@@ -218,7 +228,8 @@ class _LoginScreenState extends State<LoginScreen>
               backgroundColor: AppTheme.primary,
               disabledBackgroundColor: AppTheme.primary.withOpacity(0.6),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
+                borderRadius: BorderRadius.circular(16),
+              ),
               elevation: 0,
             ),
             child: _isLoading
@@ -226,14 +237,17 @@ class _LoginScreenState extends State<LoginScreen>
                     width: 24,
                     height: 24,
                     child: CircularProgressIndicator(
-                        color: Colors.white, strokeWidth: 2.5),
+                      color: Colors.white,
+                      strokeWidth: 2.5,
+                    ),
                   )
                 : const Text(
                     'Masuk',
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800),
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
           ),
         ),
@@ -253,27 +267,39 @@ class _LoginScreenState extends State<LoginScreen>
             children: [
               Row(
                 children: [
-                  Icon(Icons.info_outline_rounded,
-                      color: AppTheme.primary, size: 16),
+                  Icon(
+                    Icons.info_outline_rounded,
+                    color: AppTheme.primary,
+                    size: 16,
+                  ),
                   const SizedBox(width: 6),
-                  Text('Akun Demo',
-                      style: TextStyle(
-                          color: AppTheme.primary,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w800)),
+                  Text(
+                    'Akun Demo',
+                    style: TextStyle(
+                      color: AppTheme.primary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
-              const Text('Email: orangtua@tkmutiara.com',
-                  style: TextStyle(
-                      color: AppTheme.textDark,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500)),
-              const Text('Password: mutiara123',
-                  style: TextStyle(
-                      color: AppTheme.textDark,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500)),
+              const Text(
+                'Email: orangtua@tkmutiara.com',
+                style: TextStyle(
+                  color: AppTheme.textDark,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const Text(
+                'Password: mutiara123',
+                style: TextStyle(
+                  color: AppTheme.textDark,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ],
           ),
         ),
@@ -299,9 +325,10 @@ class _LoginScreenState extends State<LoginScreen>
         obscureText: isPassword && _obscurePassword,
         keyboardType: keyboardType,
         style: const TextStyle(
-            color: AppTheme.textDark,
-            fontSize: 14,
-            fontWeight: FontWeight.w600),
+          color: AppTheme.textDark,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: const TextStyle(color: AppTheme.textLight, fontSize: 14),
@@ -320,8 +347,10 @@ class _LoginScreenState extends State<LoginScreen>
                 )
               : null,
           border: InputBorder.none,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 16,
+          ),
         ),
       ),
     );

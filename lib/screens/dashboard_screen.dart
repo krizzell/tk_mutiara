@@ -7,6 +7,7 @@ import 'perkembangan_screen.dart';
 import 'pembayaran_screen.dart';
 import 'pengumuman_screen.dart';
 import 'history_screen.dart';
+import 'profil_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -17,6 +18,10 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen>
     with SingleTickerProviderStateMixin {
+  // ← WAJIB ADA: variabel profil orangtua
+  String _namaOrangTua = 'Bunda Sari';
+  String _inisial = 'BS';
+
   late AnimationController _animController;
   late List<Animation<Offset>> _slideAnims;
   late Animation<double> _fadeAnim;
@@ -24,8 +29,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   final List<PembayaranModel> _payments = PembayaranModel.dummyHistory();
   final List<PengumumanModel> _pengumuman = PengumumanModel.dummyData();
 
-  int get _unreadPengumuman =>
-      _pengumuman.where((p) => !p.isRead).length;
+  int get _unreadPengumuman => _pengumuman.where((p) => !p.isRead).length;
 
   PembayaranModel? get _tagihan =>
       _payments.firstWhere((p) => p.isBelum, orElse: () => _payments.first);
@@ -40,13 +44,17 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     _slideAnims = List.generate(
       6,
-      (i) => Tween<Offset>(
-        begin: const Offset(0, 0.3),
-        end: Offset.zero,
-      ).animate(CurvedAnimation(
-        parent: _animController,
-        curve: Interval(i * 0.1, 0.6 + i * 0.08, curve: Curves.easeOutCubic),
-      )),
+      (i) =>
+          Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+            CurvedAnimation(
+              parent: _animController,
+              curve: Interval(
+                i * 0.1,
+                0.6 + i * 0.08,
+                curve: Curves.easeOutCubic,
+              ),
+            ),
+          ),
     );
 
     _fadeAnim = Tween<double>(begin: 0, end: 1).animate(
@@ -70,15 +78,9 @@ class _DashboardScreenState extends State<DashboardScreen>
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            // === HEADER ===
             SliverToBoxAdapter(
-              child: FadeTransition(
-                opacity: _fadeAnim,
-                child: _buildHeader(),
-              ),
+              child: FadeTransition(opacity: _fadeAnim, child: _buildHeader()),
             ),
-
-            // === TAGIHAN CARD ===
             SliverToBoxAdapter(
               child: SlideTransition(
                 position: _slideAnims[0],
@@ -88,8 +90,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
               ),
             ),
-
-            // === SECTION TITLE: MENU ===
             SliverToBoxAdapter(
               child: SlideTransition(
                 position: _slideAnims[1],
@@ -109,8 +109,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
               ),
             ),
-
-            // === MENU GRID ===
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               sliver: SliverGrid(
@@ -150,9 +148,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         iconBg: const Color(0xFFDCFCE7),
                         onTap: () => Navigator.push(
                           context,
-                          _pageRoute(PembayaranScreen(
-                            tagihan: _tagihan!,
-                          )),
+                          _pageRoute(PembayaranScreen(tagihan: _tagihan!)),
                         ),
                         badge: _tagihan?.isBelum == true ? 'Belum' : null,
                       ),
@@ -170,9 +166,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         iconBg: const Color(0xFFEDE9FE),
                         onTap: () => Navigator.push(
                           context,
-                          _pageRoute(PengumumanScreen(
-                            pengumuman: _pengumuman,
-                          )),
+                          _pageRoute(PengumumanScreen(pengumuman: _pengumuman)),
                         ),
                         badge: _unreadPengumuman > 0
                             ? '$_unreadPengumuman Baru'
@@ -200,8 +194,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ]),
               ),
             ),
-
-            // === PENGUMUMAN TERBARU ===
             SliverToBoxAdapter(
               child: SlideTransition(
                 position: _slideAnims[4],
@@ -211,7 +203,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
               ),
             ),
-
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
           ],
         ),
@@ -228,23 +219,19 @@ class _DashboardScreenState extends State<DashboardScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Text(
-                      'TK Mutiara 🌟',
-                      style: TextStyle(
-                        color: AppTheme.primary,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ],
+                Text(
+                  'TK Mutiara 🌟',
+                  style: TextStyle(
+                    color: AppTheme.primary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.5,
+                  ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'Halo, Bunda Sari! 👋',
-                  style: TextStyle(
+                Text(
+                  'Halo, Bu $_namaOrangTua! 👋',
+                  style: const TextStyle(
                     color: AppTheme.textDark,
                     fontSize: 22,
                     fontWeight: FontWeight.w900,
@@ -268,21 +255,38 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _buildAvatar() {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: AppTheme.primary, width: 2.5),
-        boxShadow: AppTheme.softShadow,
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        _pageRoute(
+          ProfilScreen(
+            namaAwal: _namaOrangTua,
+            emailAwal: 'orangtua@tkmutiara.com',
+            onProfilUpdated: (nama, email) {
+              setState(() {
+                _namaOrangTua = nama;
+                _inisial = _getInitials(nama);
+              });
+            },
+          ),
+        ),
       ),
-      child: CircleAvatar(
-        radius: 26,
-        backgroundColor: const Color(0xFFFFEDE0),
-        child: Text(
-          'BS',
-          style: TextStyle(
-            color: AppTheme.primary,
-            fontWeight: FontWeight.w800,
-            fontSize: 15,
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: AppTheme.primary, width: 2.5),
+          boxShadow: AppTheme.softShadow,
+        ),
+        child: CircleAvatar(
+          radius: 26,
+          backgroundColor: const Color(0xFFFFEDE0),
+          child: Text(
+            _inisial, // ← pakai variabel, bukan hardcode 'BS'
+            style: TextStyle(
+              color: AppTheme.primary,
+              fontWeight: FontWeight.w800,
+              fontSize: 15,
+            ),
           ),
         ),
       ),
@@ -342,7 +346,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                     ),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
@@ -433,10 +439,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        _pageRoute(PengumumanScreen(
-          pengumuman: _pengumuman,
-          selectedId: p.id,
-        )),
+        _pageRoute(PengumumanScreen(pengumuman: _pengumuman, selectedId: p.id)),
       ),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -512,12 +515,23 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right_rounded,
-                color: AppTheme.textLight, size: 20),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: AppTheme.textLight,
+              size: 20,
+            ),
           ],
         ),
       ),
     );
+  }
+
+  String _getInitials(String name) {
+    final parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return name.isNotEmpty ? name[0].toUpperCase() : '?';
   }
 
   PageRouteBuilder _pageRoute(Widget page) {

@@ -42,9 +42,7 @@ class _PerkembanganScreenState extends State<PerkembanganScreen>
             Expanded(
               child: TabBarView(
                 controller: _tabController,
-                children: _data
-                    .map((d) => _buildContent(d))
-                    .toList(),
+                children: _data.map((d) => _buildContent(d)).toList(),
               ),
             ),
           ],
@@ -70,8 +68,11 @@ class _PerkembanganScreenState extends State<PerkembanganScreen>
         children: [
           IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                color: AppTheme.textDark, size: 20),
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: AppTheme.textDark,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 4),
           Column(
@@ -102,8 +103,11 @@ class _PerkembanganScreenState extends State<PerkembanganScreen>
               color: const Color(0xFFFFEDE0),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(Icons.child_care_rounded,
-                color: AppTheme.primary, size: 22),
+            child: Icon(
+              Icons.child_care_rounded,
+              color: AppTheme.primary,
+              size: 22,
+            ),
           ),
         ],
       ),
@@ -156,7 +160,8 @@ class _PerkembanganScreenState extends State<PerkembanganScreen>
   }
 
   Widget _buildSummaryCard(PerkembanganModel data) {
-    final rata = (data.nilaiKognitif +
+    final rata =
+        (data.nilaiKognitif +
             data.nilaiMotorik +
             data.nilaiSosial +
             data.nilaiBahasa +
@@ -318,22 +323,50 @@ class _PerkembanganScreenState extends State<PerkembanganScreen>
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 6),
-        Text(label,
-            style: const TextStyle(
-                color: AppTheme.textMedium,
-                fontSize: 12,
-                fontWeight: FontWeight.w500)),
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppTheme.textMedium,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ],
     );
   }
 
   Widget _buildAspekList(PerkembanganModel data) {
     final aspek = [
-      {'label': 'Kognitif', 'nilai': data.nilaiKognitif, 'icon': Icons.psychology_rounded, 'color': const Color(0xFF6366F1)},
-      {'label': 'Motorik', 'nilai': data.nilaiMotorik, 'icon': Icons.directions_run_rounded, 'color': const Color(0xFF22C55E)},
-      {'label': 'Sosial', 'nilai': data.nilaiSosial, 'icon': Icons.people_rounded, 'color': const Color(0xFFF59E0B)},
-      {'label': 'Bahasa', 'nilai': data.nilaiBahasa, 'icon': Icons.record_voice_over_rounded, 'color': const Color(0xFFFF6B1A)},
-      {'label': 'Seni', 'nilai': data.nilaiSeni, 'icon': Icons.palette_rounded, 'color': const Color(0xFFEC4899)},
+      {
+        'label': 'Kognitif',
+        'nilai': data.nilaiKognitif,
+        'icon': Icons.psychology_rounded,
+        'color': const Color(0xFF6366F1),
+      },
+      {
+        'label': 'Motorik',
+        'nilai': data.nilaiMotorik,
+        'icon': Icons.directions_run_rounded,
+        'color': const Color(0xFF22C55E),
+      },
+      {
+        'label': 'Sosial',
+        'nilai': data.nilaiSosial,
+        'icon': Icons.people_rounded,
+        'color': const Color(0xFFF59E0B),
+      },
+      {
+        'label': 'Bahasa',
+        'nilai': data.nilaiBahasa,
+        'icon': Icons.record_voice_over_rounded,
+        'color': const Color(0xFFFF6B1A),
+      },
+      {
+        'label': 'Seni',
+        'nilai': data.nilaiSeni,
+        'icon': Icons.palette_rounded,
+        'color': const Color(0xFFEC4899),
+      },
     ];
 
     return Container(
@@ -355,19 +388,25 @@ class _PerkembanganScreenState extends State<PerkembanganScreen>
             ),
           ),
           const SizedBox(height: 16),
-          ...aspek.map((a) => _buildAspekItem(
-                a['label'] as String,
-                a['nilai'] as double,
-                a['icon'] as IconData,
-                a['color'] as Color,
-              )),
+          ...aspek.map(
+            (a) => _buildAspekItem(
+              a['label'] as String,
+              a['nilai'] as double,
+              a['icon'] as IconData,
+              a['color'] as Color,
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildAspekItem(
-      String label, double nilai, IconData icon, Color color) {
+    String label,
+    double nilai,
+    IconData icon,
+    Color color,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: Column(
@@ -448,8 +487,11 @@ class _PerkembanganScreenState extends State<PerkembanganScreen>
         children: [
           Row(
             children: [
-              Icon(Icons.sticky_note_2_rounded,
-                  color: AppTheme.primary, size: 20),
+              Icon(
+                Icons.sticky_note_2_rounded,
+                color: AppTheme.primary,
+                size: 20,
+              ),
               const SizedBox(width: 8),
               Text(
                 'Catatan Guru',
@@ -530,7 +572,10 @@ class _RadarPainter extends CustomPainter {
       final angle = -3.14159265 / 2 + i * angleStep;
       canvas.drawLine(
         center,
-        Offset(center.dx + radius * _cos(angle), center.dy + radius * _sin(angle)),
+        Offset(
+          center.dx + radius * _cos(angle),
+          center.dy + radius * _sin(angle),
+        ),
         spokePaint,
       );
     }
@@ -590,16 +635,8 @@ class _RadarPainter extends CustomPainter {
       final r = radius * values[i];
       final x = center.dx + r * _cos(angle);
       final y = center.dy + r * _sin(angle);
-      canvas.drawCircle(
-        Offset(x, y),
-        5,
-        Paint()..color = AppTheme.white,
-      );
-      canvas.drawCircle(
-        Offset(x, y),
-        4,
-        Paint()..color = AppTheme.primary,
-      );
+      canvas.drawCircle(Offset(x, y), 5, Paint()..color = AppTheme.white);
+      canvas.drawCircle(Offset(x, y), 4, Paint()..color = AppTheme.primary);
     }
   }
 
