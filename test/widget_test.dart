@@ -5,6 +5,6 @@ void main() {
   testWidgets('App loads successfully', (WidgetTester tester) async {
     await tester.pumpWidget(const MutiaraApp()); 
 
-    expect(find.text('TK Mutiara'), findsWidgets);
+    expect(find.text('TK Swasta Mutiara Balige'), findsWidgets);
   });
 }
