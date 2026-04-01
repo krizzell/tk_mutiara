@@ -18,7 +18,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen>
     with SingleTickerProviderStateMixin {
-  // ← WAJIB ADA: variabel profil orangtua
+
   String _namaOrangTua = 'Bunda Sari';
   String _inisial = 'BS';
 
@@ -44,17 +44,13 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     _slideAnims = List.generate(
       6,
-      (i) =>
-          Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
-            CurvedAnimation(
-              parent: _animController,
-              curve: Interval(
-                i * 0.1,
-                0.6 + i * 0.08,
-                curve: Curves.easeOutCubic,
-              ),
-            ),
-          ),
+      (i) => Tween<Offset>(
+        begin: const Offset(0, 0.3),
+        end: Offset.zero,
+      ).animate(CurvedAnimation(
+        parent: _animController,
+        curve: Interval(i * 0.1, 0.6 + i * 0.08, curve: Curves.easeOutCubic),
+      )),
     );
 
     _fadeAnim = Tween<double>(begin: 0, end: 1).animate(
@@ -78,25 +74,33 @@ class _DashboardScreenState extends State<DashboardScreen>
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
+            // === HEADER ===
             SliverToBoxAdapter(
-              child: FadeTransition(opacity: _fadeAnim, child: _buildHeader()),
+              child: FadeTransition(
+                opacity: _fadeAnim,
+                child: _buildHeader(),
+              ),
             ),
+
+            // === CARD PERKEMBANGAN ANAK (ganti dari SPP) ===
             SliverToBoxAdapter(
               child: SlideTransition(
                 position: _slideAnims[0],
                 child: FadeTransition(
                   opacity: _fadeAnim,
-                  child: _buildTagihanCard(),
+                  child: _buildPerkembanganCard(),
                 ),
               ),
             ),
+
+            // === SECTION TITLE: MENU ===
             SliverToBoxAdapter(
               child: SlideTransition(
                 position: _slideAnims[1],
                 child: FadeTransition(
                   opacity: _fadeAnim,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
+                  child: const Padding(
+                    padding: EdgeInsets.fromLTRB(20, 24, 20, 12),
                     child: Text(
                       'Menu Utama',
                       style: TextStyle(
@@ -109,6 +113,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
               ),
             ),
+
+            // === MENU GRID - 2 BOX SAJA ===
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               sliver: SliverGrid(
@@ -119,23 +125,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   childAspectRatio: 0.88,
                 ),
                 delegate: SliverChildListDelegate([
-                  SlideTransition(
-                    position: _slideAnims[2],
-                    child: FadeTransition(
-                      opacity: _fadeAnim,
-                      child: MenuCard(
-                        title: 'Perkembangan\nAnak',
-                        subtitle: 'Pantau tumbuh kembang si kecil',
-                        icon: Icons.child_care_rounded,
-                        color: const Color(0xFFFF6B1A),
-                        iconBg: const Color(0xFFFFEDE0),
-                        onTap: () => Navigator.push(
-                          context,
-                          _pageRoute(const PerkembanganScreen()),
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Box 1: Bayar SPP
                   SlideTransition(
                     position: _slideAnims[2],
                     child: FadeTransition(
@@ -154,28 +144,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                       ),
                     ),
                   ),
+                  // Box 2: Riwayat Pembayaran
                   SlideTransition(
-                    position: _slideAnims[3],
-                    child: FadeTransition(
-                      opacity: _fadeAnim,
-                      child: MenuCard(
-                        title: 'Pengumuman',
-                        subtitle: 'Info terbaru dari sekolah',
-                        icon: Icons.campaign_rounded,
-                        color: const Color(0xFF6366F1),
-                        iconBg: const Color(0xFFEDE9FE),
-                        onTap: () => Navigator.push(
-                          context,
-                          _pageRoute(PengumumanScreen(pengumuman: _pengumuman)),
-                        ),
-                        badge: _unreadPengumuman > 0
-                            ? '$_unreadPengumuman Baru'
-                            : null,
-                      ),
-                    ),
-                  ),
-                  SlideTransition(
-                    position: _slideAnims[3],
+                    position: _slideAnims[2],
                     child: FadeTransition(
                       opacity: _fadeAnim,
                       child: MenuCard(
@@ -194,15 +165,65 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ]),
               ),
             ),
+
+            // === SECTION TITLE: PENGUMUMAN ===
             SliverToBoxAdapter(
               child: SlideTransition(
-                position: _slideAnims[4],
+                position: _slideAnims[3],
                 child: FadeTransition(
                   opacity: _fadeAnim,
-                  child: _buildPengumumanSection(),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Pengumuman',
+                          style: TextStyle(
+                            color: AppTheme.textDark,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            _pageRoute(
+                                PengumumanScreen(pengumuman: _pengumuman)),
+                          ),
+                          child: Text(
+                            'Lihat Semua',
+                            style: TextStyle(
+                              color: AppTheme.primary,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
+
+            // === LIST PENGUMUMAN LENGKAP ===
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, i) => SlideTransition(
+                    position: _slideAnims[4],
+                    child: FadeTransition(
+                      opacity: _fadeAnim,
+                      child: _buildPengumumanItem(_pengumuman[i]),
+                    ),
+                  ),
+                  childCount: _pengumuman.length,
+                ),
+              ),
+            ),
+
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
           ],
         ),
@@ -210,6 +231,97 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
+  // =============================================
+  // CARD PERKEMBANGAN ANAK (menggantikan card SPP)
+  // =============================================
+  Widget _buildPerkembanganCard() {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        _pageRoute(const PerkembanganScreen()),
+      ),
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: AppTheme.primaryGradient,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: AppTheme.softShadow,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Perkembangan Anak',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'Bintang Mutiara ⭐',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Kelas A · TK Mutiara',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'Lihat Perkembangan →',
+                      style: TextStyle(
+                        color: AppTheme.primary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: const Icon(
+                Icons.child_care_rounded,
+                color: Colors.white,
+                size: 36,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // =============================================
+  // HEADER
+  // =============================================
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
@@ -230,7 +342,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Halo, Bu $_namaOrangTua! 👋',
+                  'Halo, $_namaOrangTua! 👋',
                   style: const TextStyle(
                     color: AppTheme.textDark,
                     fontSize: 22,
@@ -254,22 +366,23 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
+  // =============================================
+  // AVATAR
+  // =============================================
   Widget _buildAvatar() {
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        _pageRoute(
-          ProfilScreen(
-            namaAwal: _namaOrangTua,
-            emailAwal: 'orangtua@tkmutiara.com',
-            onProfilUpdated: (nama, email) {
-              setState(() {
-                _namaOrangTua = nama;
-                _inisial = _getInitials(nama);
-              });
-            },
-          ),
-        ),
+        _pageRoute(ProfilScreen(
+          namaAwal: _namaOrangTua,
+          emailAwal: 'orangtua@tkmutiara.com',
+          onProfilUpdated: (nama, email) {
+            setState(() {
+              _namaOrangTua = nama;
+              _inisial = _getInitials(nama);
+            });
+          },
+        )),
       ),
       child: Container(
         decoration: BoxDecoration(
@@ -281,7 +394,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           radius: 26,
           backgroundColor: const Color(0xFFFFEDE0),
           child: Text(
-            _inisial, // ← pakai variabel, bukan hardcode 'BS'
+            _inisial,
             style: TextStyle(
               color: AppTheme.primary,
               fontWeight: FontWeight.w800,
@@ -293,141 +406,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  Widget _buildTagihanCard() {
-    final tagihan = _tagihan;
-    final isBelum = tagihan?.isBelum ?? false;
-
-    return Container(
-      margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: AppTheme.primaryGradient,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: AppTheme.softShadow,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Status SPP Bulan Ini',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  isBelum ? 'Belum Dibayar' : 'Sudah Lunas ✓',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  tagihan?.nominalFormatted ?? 'Rp 350.000',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                if (isBelum) ...[
-                  const SizedBox(height: 12),
-                  GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      _pageRoute(PembayaranScreen(tagihan: tagihan!)),
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        'Bayar Sekarang →',
-                        style: TextStyle(
-                          color: AppTheme.primary,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          const SizedBox(width: 16),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Icon(
-              isBelum
-                  ? Icons.warning_amber_rounded
-                  : Icons.check_circle_rounded,
-              color: Colors.white,
-              size: 36,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPengumumanSection() {
-    final recent = _pengumuman.take(2).toList();
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Pengumuman Terbaru',
-                style: TextStyle(
-                  color: AppTheme.textDark,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  _pageRoute(PengumumanScreen(pengumuman: _pengumuman)),
-                ),
-                child: Text(
-                  'Lihat Semua',
-                  style: TextStyle(
-                    color: AppTheme.primary,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          ...recent.map((p) => _buildPengumumanItem(p)),
-        ],
-      ),
-    );
-  }
-
+  // =============================================
+  // ITEM PENGUMUMAN
+  // =============================================
   Widget _buildPengumumanItem(PengumumanModel p) {
     final colors = {
       'penting': const Color(0xFFEF4444),
@@ -439,7 +420,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        _pageRoute(PengumumanScreen(pengumuman: _pengumuman, selectedId: p.id)),
+        _pageRoute(PengumumanScreen(
+          pengumuman: _pengumuman,
+          selectedId: p.id,
+        )),
       ),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -504,28 +488,54 @@ class _DashboardScreenState extends State<DashboardScreen>
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    p.tanggal,
-                    style: TextStyle(
-                      color: color,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        p.tanggal,
+                        style: TextStyle(
+                          color: color,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: color.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          p.kategori == 'penting'
+                              ? '🔴 Penting'
+                              : p.kategori == 'kegiatan'
+                                  ? '🎉 Kegiatan'
+                                  : '💚 Info',
+                          style: TextStyle(
+                            color: color,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: AppTheme.textLight,
-              size: 20,
-            ),
+            const SizedBox(width: 8),
+            const Icon(Icons.chevron_right_rounded,
+                color: AppTheme.textLight, size: 20),
           ],
         ),
       ),
     );
   }
 
+  // =============================================
+  // HELPERS
+  // =============================================
   String _getInitials(String name) {
     final parts = name.trim().split(' ');
     if (parts.length >= 2) {
