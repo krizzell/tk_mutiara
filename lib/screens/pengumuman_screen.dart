@@ -17,8 +17,9 @@ class PengumumanScreen extends StatefulWidget {
 }
 
 class _PengumumanScreenState extends State<PengumumanScreen> {
-  String _filter = 'semua';
   PengumumanModel? _selected;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -28,12 +29,33 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
         (p) => p.id == widget.selectedId,
         orElse: () => widget.pengumuman.first,
       );
+
+      if (_selected != null && !_selected!.isRead) {
+        _markAsRead(_selected!);
+      }
+    }
+  }
+
+  // ✅ Fungsi ini sudah diperbaiki
+  void _markAsRead(PengumumanModel pengumuman) {
+    final index = widget.pengumuman.indexWhere((p) => p.id == pengumuman.id);
+
+    if (index != -1) {
+      setState(() {
+        // Menggunakan copyWith agar tidak error 'final'
+        widget.pengumuman[index] = pengumuman.copyWith(isRead: true);
+      });
     }
   }
 
   List<PengumumanModel> get _filtered {
-    if (_filter == 'semua') return widget.pengumuman;
-    return widget.pengumuman.where((p) => p.kategori == _filter).toList();
+    if (_searchQuery.isEmpty) return widget.pengumuman;
+
+    final query = _searchQuery.toLowerCase().trim();
+    return widget.pengumuman.where((p) {
+      return p.judul.toLowerCase().contains(query) ||
+          p.isi.toLowerCase().contains(query);
+    }).toList();
   }
 
   @override
@@ -46,25 +68,29 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
     );
   }
 
+  // ====================== LIST VIEW ======================
   Widget _buildList(BuildContext context) {
+    final unreadCount = widget.pengumuman.where((p) => !p.isRead).length;
+
     return Column(
       children: [
-        _buildHeader(context),
-        _buildFilterChips(),
+        _buildHeader(unreadCount),
+        _buildSearchBar(),
         Expanded(
-          child: ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-            itemCount: _filtered.length,
-            itemBuilder: (_, i) => _buildCard(_filtered[i]),
-          ),
+          child: _filtered.isEmpty
+              ? _buildEmptyState()
+              : ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+                  itemCount: _filtered.length,
+                  itemBuilder: (_, i) => _buildCard(_filtered[i]),
+                ),
         ),
       ],
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    final unread = widget.pengumuman.where((p) => !p.isRead).length;
+  Widget _buildHeader(int unreadCount) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 20, 16),
       color: AppTheme.white,
@@ -72,13 +98,10 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
         children: [
           IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: AppTheme.textDark,
-              size: 20,
-            ),
+            icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                color: AppTheme.textDark, size: 20),
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,86 +110,52 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
                   'Pengumuman',
                   style: TextStyle(
                     color: AppTheme.textDark,
-                    fontSize: 18,
+                    fontSize: 20,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 Text(
-                  '$unread pengumuman belum dibaca',
+                  '$unreadCount pengumuman belum dibaca',
                   style: TextStyle(
-                    color: unread > 0 ? AppTheme.primary : AppTheme.textMedium,
-                    fontSize: 12,
+                    color: unreadCount > 0 ? AppTheme.primary : AppTheme.textMedium,
+                    fontSize: 13,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ),
           ),
-          if (unread > 0)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: AppTheme.primary,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                '$unread Baru',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
         ],
       ),
     );
   }
 
-  Widget _buildFilterChips() {
-    final filters = [
-      {'key': 'semua', 'label': 'Semua'},
-      {'key': 'penting', 'label': '🔴 Penting'},
-      {'key': 'kegiatan', 'label': '🎉 Kegiatan'},
-      {'key': 'info', 'label': '💚 Info'},
-    ];
-
+  Widget _buildSearchBar() {
     return Container(
-      height: 52,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      color: AppTheme.white,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: filters.map((f) {
-          final isSelected = _filter == f['key'];
-          return GestureDetector(
-            onTap: () => setState(() => _filter = f['key']!),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              margin: const EdgeInsets.only(right: 10, bottom: 8, top: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              decoration: BoxDecoration(
-                color: isSelected ? AppTheme.primary : AppTheme.background,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: isSelected
-                      ? AppTheme.primary
-                      : AppTheme.primary.withOpacity(0.2),
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  f['label']!,
-                  style: TextStyle(
-                    color: isSelected ? Colors.white : AppTheme.textDark,
-                    fontSize: 12,
-                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-          );
-        }).toList(),
+      margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: AppTheme.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: AppTheme.cardShadowList,
+      ),
+      child: TextField(
+        controller: _searchController,
+        onChanged: (value) => setState(() => _searchQuery = value),
+        decoration: InputDecoration(
+          hintText: 'Cari pengumuman...',
+          border: InputBorder.none,
+          icon: const Icon(Icons.search, color: AppTheme.textMedium),
+          suffixIcon: _searchQuery.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    _searchController.clear();
+                    setState(() => _searchQuery = '');
+                  },
+                )
+              : null,
+        ),
       ),
     );
   }
@@ -175,7 +164,14 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
     final config = _getKategoriConfig(p.kategori);
 
     return GestureDetector(
-      onTap: () => setState(() => _selected = p),
+      onTap: () {
+        setState(() {
+          _selected = p;
+          if (!p.isRead) {
+            _markAsRead(p);
+          }
+        });
+      },
       child: Container(
         margin: const EdgeInsets.only(bottom: 14),
         decoration: BoxDecoration(
@@ -183,109 +179,68 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
           borderRadius: BorderRadius.circular(20),
           boxShadow: AppTheme.cardShadowList,
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Row(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(width: 5, height: 110, color: config['color'] as Color),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: (config['color'] as Color).withOpacity(
-                                0.12,
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              config['label'] as String,
-                              style: TextStyle(
-                                color: config['color'] as Color,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                          const Spacer(),
-                          if (!p.isRead)
-                            Container(
-                              width: 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                color: config['color'] as Color,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                        ],
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      p.judul,
+                      style: TextStyle(
+                        color: AppTheme.textDark,
+                        fontSize: 15,
+                        fontWeight: p.isRead ? FontWeight.w600 : FontWeight.w800,
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        p.judul,
-                        style: TextStyle(
-                          color: AppTheme.textDark,
-                          fontSize: 14,
-                          fontWeight: p.isRead
-                              ? FontWeight.w600
-                              : FontWeight.w800,
-                          height: 1.3,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        p.isi,
-                        style: const TextStyle(
-                          color: AppTheme.textMedium,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          height: 1.5,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.access_time_rounded,
-                            size: 12,
-                            color: AppTheme.textLight,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            p.tanggal,
-                            style: const TextStyle(
-                              color: AppTheme.textLight,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            'Baca selengkapnya →',
-                            style: TextStyle(
-                              color: config['color'] as Color,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                    ),
                   ),
+                  if (!p.isRead)
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                p.isi,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: AppTheme.textMedium,
+                  fontSize: 13,
+                  height: 1.4,
                 ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(Icons.access_time_rounded,
+                      size: 14, color: AppTheme.textMedium),
+                  const SizedBox(width: 6),
+                  Text(
+                    p.tanggal,
+                    style: TextStyle(
+                      color: AppTheme.textMedium,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    p.kategori.toUpperCase(),
+                    style: TextStyle(
+                      color: config['color'],
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -294,13 +249,53 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
     );
   }
 
+    Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.search_off_rounded,
+              size: 72,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Text(
+            'Tidak ada pengumuman ditemukan',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: AppTheme.textDark,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Silakan coba kata kunci pencarian lain',
+            style: TextStyle(
+              fontSize: 14,
+              color: AppTheme.textMedium,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ====================== DETAIL VIEW ======================
   Widget _buildDetail(BuildContext context) {
     final p = _selected!;
     final config = _getKategoriConfig(p.kategori);
 
     return Column(
       children: [
-        // Header detail
         Container(
           padding: const EdgeInsets.fromLTRB(16, 12, 20, 16),
           color: AppTheme.white,
@@ -308,18 +303,18 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
             children: [
               IconButton(
                 onPressed: () => setState(() => _selected = null),
-                icon: const Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: AppTheme.textDark,
-                  size: 20,
-                ),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                    color: AppTheme.textDark),
               ),
-              const Text(
-                'Detail Pengumuman',
-                style: TextStyle(
-                  color: AppTheme.textDark,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
+              const SizedBox(width: 8),
+              const Expanded(
+                child: Text(
+                  'Detail Pengumuman',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.textDark,
+                  ),
                 ),
               ),
             ],
@@ -327,27 +322,22 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
         ),
         Expanded(
           child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Kategori badge
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: (config['color'] as Color).withOpacity(0.12),
+                    color: (config['color'] as Color).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    config['label'] as String,
+                    p.kategori.toUpperCase(),
                     style: TextStyle(
-                      color: config['color'] as Color,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
+                      color: config['color'],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
                     ),
                   ),
                 ),
@@ -355,93 +345,32 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
                 Text(
                   p.judul,
                   style: const TextStyle(
-                    color: AppTheme.textDark,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
                     height: 1.3,
                   ),
                 ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Icon(
-                      Icons.calendar_today_rounded,
-                      size: 14,
-                      color: config['color'] as Color,
-                    ),
-                    const SizedBox(width: 6),
+                    const Icon(Icons.access_time_rounded, size: 18),
+                    const SizedBox(width: 8),
                     Text(
                       p.tanggal,
                       style: TextStyle(
-                        color: config['color'] as Color,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      'TK Mutiara',
-                      style: const TextStyle(
                         color: AppTheme.textMedium,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                Container(
-                  width: double.infinity,
-                  height: 2,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        config['color'] as Color,
-                        (config['color'] as Color).withOpacity(0),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
+                const Divider(height: 32),
                 Text(
                   p.isi,
                   style: const TextStyle(
-                    color: AppTheme.textDark,
                     fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    height: 1.8,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFEDE0),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: AppTheme.primary.withOpacity(0.2),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.school_rounded,
-                        color: AppTheme.primary,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 10),
-                      const Expanded(
-                        child: Text(
-                          'Pengumuman resmi dari TK Mutiara. Hubungi pihak sekolah jika ada pertanyaan.',
-                          style: TextStyle(
-                            color: AppTheme.textDark,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            height: 1.5,
-                          ),
-                        ),
-                      ),
-                    ],
+                    height: 1.7,
+                    color: AppTheme.textDark,
                   ),
                 ),
               ],
@@ -453,13 +382,21 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
   }
 
   Map<String, dynamic> _getKategoriConfig(String kategori) {
-    switch (kategori) {
+    switch (kategori.toLowerCase()) {
       case 'penting':
-        return {'color': const Color(0xFFEF4444), 'label': '🔴 Penting'};
+        return {'color': Colors.red};
       case 'kegiatan':
-        return {'color': const Color(0xFF6366F1), 'label': '🎉 Kegiatan'};
+        return {'color': Colors.blue};
+      case 'informasi':
+        return {'color': Colors.orange};
       default:
-        return {'color': const Color(0xFF22C55E), 'label': '💚 Info'};
+        return {'color': Colors.green};
     }
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 }
