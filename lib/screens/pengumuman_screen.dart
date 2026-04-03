@@ -161,8 +161,6 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
   }
 
   Widget _buildCard(PengumumanModel p) {
-    final config = _getKategoriConfig(p.kategori);
-
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -231,15 +229,6 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
                       fontSize: 12,
                     ),
                   ),
-                  const Spacer(),
-                  Text(
-                    p.kategori.toUpperCase(),
-                    style: TextStyle(
-                      color: config['color'],
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
                 ],
               ),
             ],
@@ -292,7 +281,6 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
   // ====================== DETAIL VIEW ======================
   Widget _buildDetail(BuildContext context) {
     final p = _selected!;
-    final config = _getKategoriConfig(p.kategori);
 
     return Column(
       children: [
@@ -326,22 +314,6 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: (config['color'] as Color).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    p.kategori.toUpperCase(),
-                    style: TextStyle(
-                      color: config['color'],
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
                 Text(
                   p.judul,
                   style: const TextStyle(

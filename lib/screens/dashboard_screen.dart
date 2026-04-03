@@ -19,8 +19,8 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen>
     with SingleTickerProviderStateMixin {
 
-  String _namaOrangTua = 'Bunda Sari';
-  String _inisial = 'BS';
+  String _namaAnak = 'Bintang Mutiara';
+  String _inisial = 'BM';
 
   late AnimationController _animController;
   late List<Animation<Offset>> _slideAnims;
@@ -263,9 +263,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Text(
-                    'Bintang Mutiara ⭐',
-                    style: TextStyle(
+                  Text(
+                    '$_namaAnak ⭐',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.w900,
@@ -342,16 +342,16 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Halo, $_namaOrangTua! 👋',
+                  'Halo, $_namaAnak! 👋',
                   style: const TextStyle(
                     color: AppTheme.textDark,
                     fontSize: 22,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                const Text(
-                  'Pantau perkembangan Bintang hari ini',
-                  style: TextStyle(
+                Text(
+                  'Pantau perkembangan $_namaAnak hari ini',
+                  style: const TextStyle(
                     color: AppTheme.textMedium,
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -374,11 +374,11 @@ class _DashboardScreenState extends State<DashboardScreen>
       onTap: () => Navigator.push(
         context,
         _pageRoute(ProfilScreen(
-          namaAwal: _namaOrangTua,
-          emailAwal: 'orangtua@tkmutiara.com',
+          namaAwal: _namaAnak,
+          emailAwal: 'anak@tkmutiara.com',
           onProfilUpdated: (nama, email) {
             setState(() {
-              _namaOrangTua = nama;
+              _namaAnak = nama;
               _inisial = _getInitials(nama);
             });
           },
@@ -488,38 +488,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        p.tanggal,
-                        style: TextStyle(
-                          color: color,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: color.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          p.kategori == 'penting'
-                              ? '🔴 Penting'
-                              : p.kategori == 'kegiatan'
-                                  ? '🎉 Kegiatan'
-                                  : '💚 Info',
-                          style: TextStyle(
-                            color: color,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ],
+                  Text(
+                    p.tanggal,
+                    style: TextStyle(
+                      color: color,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               ),

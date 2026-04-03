@@ -10,8 +10,8 @@ class ProfilScreen extends StatefulWidget {
   const ProfilScreen({
     super.key,
     this.onProfilUpdated,
-    this.namaAwal = 'Bunda Sari', // ← default value
-    this.emailAwal = 'orangtua@tkmutiara.com', // ← default value
+  this.namaAwal = 'Bintang Mutiara',
+  this.emailAwal = 'anak@tkmutiara.com', 
   });
 
   @override
@@ -427,7 +427,7 @@ class _ProfilScreenState extends State<ProfilScreen>
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              '👨‍👩‍👧 Orang Tua Murid',
+              '👨‍� Murid TK Mutiara',
               style: TextStyle(
                 color: AppTheme.primary,
                 fontSize: 12,
